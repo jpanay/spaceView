@@ -140,7 +140,7 @@ let renderSolarSystem = () => {
     planetArr.push(currPlanet)
 
     let orbGeometry = new THREE.SphereGeometry(20000000, 12, 12)
-    let orbMaterial = new THREE.MeshBasicMaterial( {map: texture, color: 0xffffff, transparent: true, opacity: 0.2, wireframe: true} )
+    let orbMaterial = new THREE.MeshBasicMaterial( {map: texture, color: 0xffffff, transparent: true, opacity: 0.05, wireframe: true} )
     let currOrb = new THREE.Mesh(orbGeometry, orbMaterial)
     currOrb.name = planet.name
     currOrb.position.x = planet.distFromSun
@@ -436,7 +436,7 @@ let distInterval = setInterval(() => {
     $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000)} Million`)
     $('.ly').text(`Light Years: ${currDistLy}`)
     perspective.sun.material.opacity = 0
-    perspective.solarSystem.material.opacity = 0.1
+    perspective.solarSystem.material.opacity = 0.05
     perspective.closeStars.material.opacity = 0
     perspective.milkyWay.material.opacity = 0
     perspective.localGroup.material.opacity = 0
@@ -459,7 +459,7 @@ let distInterval = setInterval(() => {
     $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000000)} Billion`)
     $('.ly').text(`Light Years: ${currDistLy}`)
     perspective.solarSystem.material.opacity = 0.2
-    perspective.closeStars.material.opacity = 0.1
+    perspective.closeStars.material.opacity = 0.05
     perspective.milkyWay.material.opacity = 0
   }
   // Close Stars
@@ -480,7 +480,7 @@ let distInterval = setInterval(() => {
     $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000000000000)} Quintillion`)
     $('.ly').text(`Light Years: ${currDistLy}`)
     perspective.closeStars.material.opacity = 0.2
-    perspective.milkyWay.material.opacity = 0.1
+    perspective.milkyWay.material.opacity = 0.05
     perspective.localGroup.material.opacity = 0
   }
   // Milky Way
@@ -521,7 +521,7 @@ let distInterval = setInterval(() => {
     $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000000000000000)} Sextillion`)
     $('.ly').text(`Light Years: ${Math.floor(currDistLy/1000000)} Million`)
     perspective.localGroup.material.opacity = 0.2
-    perspective.laniakeaCluster.material.opacity = 0.1
+    perspective.laniakeaCluster.material.opacity = 0.08
     perspective.localSuperClusters.material.opacity = 0
   }
   // Laniakea Cluster
@@ -542,7 +542,7 @@ let distInterval = setInterval(() => {
     $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000000000000000000)} Septillion`)
     $('.ly').text(`Light Years: ${Math.floor(currDistLy/1000000)} Million`)
     perspective.laniakeaCluster.material.opacity = 0.2
-    perspective.localSuperClusters.material.opacity = 0.05
+    perspective.localSuperClusters.material.opacity = 0.08
     perspective.observableUniverse.material.opacity = 0
   }
   // Local Super Clusters
