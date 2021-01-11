@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="three.js-master/build/three.js"></script>
+    <title>Solar System</title>
+  </head>
+  <body>
+
+    <div class='viewbox'></div>
+
+    <div class="info-center">
+      <!-- Distance Info -->
+      <div class="distance-info">
+        <div class="curr-info">
+          <div class='curr-name'></div>
+          <div class='curr-objects'></div>
+          <div class='curr-size'></div>
+        </div>
+        <div class="distance-mesurements">
+          <div class='ly'></div>
+          <div class='km'></div>
+        </div>
+      </div>
+      <!-- Navigating Buttons -->
+      <div class="info-btns">
+        <div class="solar-system-btn info-btn">Solar System</div>
+        <div class="steller-hood-btn info-btn">Steller Neighborhood</div>
+        <div class="milky-way-btn info-btn">Milky Way</div>
+        <div class="local-group-btn info-btn">Local Group</div>
+        <div class="laniakea-cluster-btn info-btn">Laniakea Cluster</div>
+        <div class="local-super-cluster-btn info-btn">Local Super Cluster</div>
+        <div class="observable-universe-btn info-btn">Observable Universe</div>
+      </div>
+      <!-- Main Info Div -->
+      <div class="info"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data/solarSystem.js"></script>
+    <script src="js/data/closeStars.js"></script>
+    <script src="js/data/localGroup.js"></script>
+    <script src="js/data/laniakea.js"></script>
+    <script type="module" src="js/solarSystem.js"></script>
+
+    <!-- <script src="js/planetInfo.js"></script> -->
+    <!-- <script type="module" src="js/galaxy.js"></script>
+    <script type="module" src="js/universe.js"></script> -->
+    <!-- <script type="module" src="js/planetExplorer.js"></script> -->
+  </body>
+</html>
