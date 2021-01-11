@@ -1,4 +1,4 @@
-import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
+// import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 let scene, camera, renderer, light, controls
 let init = () => {
   scene = new THREE.Scene();
@@ -15,7 +15,7 @@ let init = () => {
 
   // CONTROLS
   let body = document.querySelector('body')
-  controls = new OrbitControls(camera, body);
+  controls = new THREE.OrbitControls(camera, body);
   controls.update()
   // RENDERER
   renderer = new THREE.WebGLRenderer();
@@ -269,7 +269,7 @@ let resetOpacity = () => {
 let selectSection = () => {
   $('.solar-system-btn').click(()=>{
     camera.position.set(100*k,200*ml, bn)
-    selectSelectionSolar()
+    renderSolarSystem()
     removeSection(stellerObjs)
     renderStatus.closeStars = false
     removeSection(milkywayObjs)
@@ -284,8 +284,11 @@ let selectSection = () => {
     renderStatus.observableUniverse = false
   })
   $('.steller-hood-btn').click(()=>{
+    $('.rendering').text('RENDERING')
     camera.position.set(10*k,10*ml,100*ly)
+
     renderStellarNeightborhood()
+    $('.rendering').text('')
     renderStatus.closeStars = true
     removeSection(milkywayObjs)
     renderStatus.milkyWay = false
@@ -343,6 +346,10 @@ let selectSection = () => {
     renderObservableUniverse()
     renderStatus.observableUniverse = true
   })
+}
+
+let solarSystemInfo = () => {
+
 }
 
 // Tool tips for info bar items

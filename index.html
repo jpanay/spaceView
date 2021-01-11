@@ -3,9 +3,9 @@
     <link rel="stylesheet" href="css/main.css">
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js" integrity="sha512-jeYvJdyAYkpQCY/omvCYQo89qA5YxDW4JBT7COPsHT2sOAanwxkZRFeP9gc69b5reSDpZIoyCqZQZcWZkbB5Gw==" crossorigin="anonymous"></script>
-    <!-- Disbale Zoom on mobile -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
     <!-- <script src="three.js-master/build/three.js"></script> -->
+
     <title>Solar System</title>
   </head>
   <body>
@@ -14,6 +14,7 @@
 
     <div class="info-center">
       <!-- Distance Info -->
+      <div class="rendering"></div>
       <div class="distance-info">
         <div class="curr-info">
           <div class='curr-name'></div>
@@ -44,8 +45,7 @@
     <script src="js/data/closeStars.js"></script>
     <script src="js/data/localGroup.js"></script>
     <script src="js/data/laniakea.js"></script>
-    <script type="module" src="js/solarSystem.js"></script>
-    <script type="module" src="js/handleUI.js"></script>
+    <script src="js/solarSystem.js"></script>
 
   </body>
 </html>
