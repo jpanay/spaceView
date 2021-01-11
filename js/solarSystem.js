@@ -155,25 +155,25 @@ let renderSolarSystem = () => {
     makePlanet(planets[key])
   }
 
-  // let setOrbit = () => {
-  //   let msDay = 24 * 60 * 60000
-  //   let msYear = 365 * msDay
-  //   setInterval(() => {
-  //   for (let i = 0; i < planetArr.length; i++) {
-  //     let p = planetArr[i]
-  //     let orb = orbArr[i]
-  //     if(p.name === 'sun') { continue }
-  //     let dTheta = 2 * Math.PI / p.orbitalPeriod / 1000
-  //     p.theta = p.theta + dTheta
-  //     p.position.x = (p.distFromSun) * Math.cos(p.theta);
-  //     p.position.z = (p.distFromSun) * Math.sin(p.theta);
-  //     orb.position.x = (p.distFromSun) * Math.cos(p.theta);
-  //     orb.position.z = (p.distFromSun) * Math.sin(p.theta);
-  //     p.rotation.y += 0.003
-  //   }
+  let setOrbit = () => {
+    let msDay = 24 * 60 * 60000
+    let msYear = 365 * msDay
+    setInterval(() => {
+    for (let i = 0; i < planetArr.length; i++) {
+      let p = planetArr[i]
+      let orb = orbArr[i]
+      if(p.name === 'sun') { continue }
+      let dTheta = 2 * Math.PI / p.orbitalPeriod / 1000
+      p.theta = p.theta + dTheta
+      p.position.x = (p.distFromSun) * Math.cos(p.theta);
+      p.position.z = (p.distFromSun) * Math.sin(p.theta);
+      orb.position.x = (p.distFromSun) * Math.cos(p.theta);
+      orb.position.z = (p.distFromSun) * Math.sin(p.theta);
+      p.rotation.y += 0.003
+    }
 
-  //   }, 10)
-  // }
+    }, 10)
+  }
   // setOrbit()
 }
 let stellerObjs = []
@@ -285,9 +285,9 @@ let selectSection = () => {
     renderStatus.observableUniverse = false
   })
   $('.steller-hood-btn').click(()=>{
+    goTo('none')
     $('.rendering').text('RENDERING')
     camera.position.set(10*k,10*ml,100*ly)
-
     renderStellarNeightborhood()
     $('.rendering').text('')
     renderStatus.closeStars = true
@@ -303,6 +303,7 @@ let selectSection = () => {
     renderStatus.observableUniverse = false
   })
   $('.milky-way-btn').click(()=>{
+    goTo('none')
     camera.position.set(1*k*bn*ml,2*k*bn*ml,2*bn*bn)
     renderMilkyWay()
     renderStatus.milkyWay = true
@@ -316,6 +317,7 @@ let selectSection = () => {
     renderStatus.observableUniverse = false
   })
   $('.local-group-btn').click(()=>{
+    goTo('none')
     camera.position.set(10*k,bn*bn*320)
     renderLocalGroup()
     renderStatus.localGroup = true
@@ -327,6 +329,7 @@ let selectSection = () => {
     renderStatus.observableUniverse = false
   })
   $('.laniakea-cluster-btn').click(()=>{
+    goTo('none')
     camera.position.set(k*bn*ml*150,2*k*bn*ml*50,bn*bn*k*16)
     renderLaniakeaCluster()
     renderStatus.laniakeaCluster = true
@@ -336,6 +339,7 @@ let selectSection = () => {
     renderStatus.observableUniverse = false
   })
   $('.local-super-cluster-btn').click(()=>{
+    goTo('none')
     camera.position.set(k*bn*ml*150,2*k*bn*bn,bn*bn*k*100)
     renderLocalSuperClusters()
     renderStatus.localSuperClusters = true
@@ -343,6 +347,7 @@ let selectSection = () => {
     renderStatus.observableUniverse = false
   })
   $('.observable-universe-btn').click(()=>{
+    goTo('none')
     camera.position.set(k*bn*ml*k*k,k*bn*ml*k*k,bn*bn*ml)
     renderObservableUniverse()
     renderStatus.observableUniverse = true
@@ -351,11 +356,15 @@ let selectSection = () => {
 
 let goTo = (name) => {
   // Planets
+  if (name === 'none') {
+    $('.info').empty()
+  }
+
   for (let planet of planetArr) {
     if (planet.name === name) {
-      let x = planet.position.x + planet.radius * 3
-      let y = planet.position.y + planet.radius * 3
-      let z = planet.position.z + planet.radius * 3
+      let x = planet.position.x + planet.radius * 4
+      let y = planet.position.y + planet.radius * 4
+      let z = planet.position.z + planet.radius * 4
       camera.position.set(x, y, z)
       controls.target = planet.position
       console.log(planet)
