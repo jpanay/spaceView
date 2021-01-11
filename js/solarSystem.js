@@ -155,26 +155,26 @@ let renderSolarSystem = () => {
     makePlanet(planets[key])
   }
 
-  let setOrbit = () => {
-    let msDay = 24 * 60 * 60000
-    let msYear = 365 * msDay
-    setInterval(() => {
-    for (let i = 0; i < planetArr.length; i++) {
-      let p = planetArr[i]
-      let orb = orbArr[i]
-      if(p.name === 'sun') { continue }
-      let dTheta = 2 * Math.PI / p.orbitalPeriod / 1000
-      p.theta = p.theta + dTheta
-      p.position.x = (p.distFromSun) * Math.cos(p.theta);
-      p.position.z = (p.distFromSun) * Math.sin(p.theta);
-      orb.position.x = (p.distFromSun) * Math.cos(p.theta);
-      orb.position.z = (p.distFromSun) * Math.sin(p.theta);
-      p.rotation.y += 0.003
-    }
+  // let setOrbit = () => {
+  //   let msDay = 24 * 60 * 60000
+  //   let msYear = 365 * msDay
+  //   setInterval(() => {
+  //   for (let i = 0; i < planetArr.length; i++) {
+  //     let p = planetArr[i]
+  //     let orb = orbArr[i]
+  //     if(p.name === 'sun') { continue }
+  //     let dTheta = 2 * Math.PI / p.orbitalPeriod / 1000
+  //     p.theta = p.theta + dTheta
+  //     p.position.x = (p.distFromSun) * Math.cos(p.theta);
+  //     p.position.z = (p.distFromSun) * Math.sin(p.theta);
+  //     orb.position.x = (p.distFromSun) * Math.cos(p.theta);
+  //     orb.position.z = (p.distFromSun) * Math.sin(p.theta);
+  //     p.rotation.y += 0.003
+  //   }
 
-    }, 10)
-  }
-  setOrbit()
+  //   }, 10)
+  // }
+  // setOrbit()
 }
 let stellerObjs = []
 let renderStellarNeightborhood = () => {
@@ -268,6 +268,7 @@ let resetOpacity = () => {
 }
 let selectSection = () => {
   $('.solar-system-btn').click(()=>{
+    solarSystemInfo()
     camera.position.set(100*k,200*ml, bn)
     renderSolarSystem()
     removeSection(stellerObjs)
@@ -348,8 +349,41 @@ let selectSection = () => {
   })
 }
 
-let solarSystemInfo = () => {
+let goTo = (name) => {
+  // Planets
+  for (let planet of planetArr) {
+    if (planet.name === name) {
+      let x = planet.position.x + planet.radius * 3
+      let y = planet.position.y + planet.radius * 3
+      let z = planet.position.z + planet.radius * 3
+      camera.position.set(x, y, z)
+      controls.target = planet.position
+      console.log(planet)
+    }
+  }
+}
 
+let solarSystemInfo = () => {
+  for (let key in planets) {
+    let planet = planets[key]
+    let div = $(`<div class="info-div"></div>`)
+    let img = $(`<img src="${planet.img}">`)
+    let name = $(`<div>${planet.name}</div>`)
+    let diameter = $(`<div>Diameter: ${planet.diameter}</div>`)
+    let dist = $(`<div>Distance from Sun: ${planet.distFromSun}</div>`)
+    let orbPeriod = $(`<div>Orbital Period: ${planet.orbitalPeriod}</div>`)
+    let desc = $(`<p>${planet.desc}</p>`)
+    div.append(img)
+    div.append(name)
+    div.append(diameter)
+    div.append(dist)
+    div.append(orbPeriod)
+    div.append(desc)
+    div.on('click', () => {
+      goTo(planet.name)
+    })
+    $('.info').append(div)
+  }
 }
 
 // Tool tips for info bar items

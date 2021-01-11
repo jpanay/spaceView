@@ -19,7 +19,7 @@ body {
 /* Main Info Center */
 .info-center {
   width: 100%;
-  height: 20%;
+  max-height: 50%;
   bottom: 0;
   z-index: 10;
   background-color: rgba(20, 20, 20, 0.692);
@@ -76,6 +76,27 @@ body {
   display: flex;
   flex-direction: row;
   padding: 10px;
+  /* height: 500px; */
+  overflow: scroll;
+}
+
+.info-div {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  padding: 0px 10px;
+  margin: 0px;
+  cursor: pointer;
+}
+
+.info-div img{
+  /* width: 50px; */
+  height: 150px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.info-item {
 
 }
 
