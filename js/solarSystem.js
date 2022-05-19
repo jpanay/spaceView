@@ -267,7 +267,7 @@ let resetOpacity = () => {
   perspective.observableUniverse.material.opacity = 0
 }
 let selectSection = () => {
-  $('.solar-system-btn').click(()=>{
+  $('.solar-system-btn').mousedown(()=>{
     solarSystemInfo()
     camera.position.set(100*k,200*ml, bn)
     renderSolarSystem()
@@ -284,7 +284,7 @@ let selectSection = () => {
     removeSection(observableUniverseObjs)
     renderStatus.observableUniverse = false
   })
-  $('.steller-hood-btn').click(()=>{
+  $('.steller-hood-btn').mousedown(()=>{
     goTo('none')
     $('.rendering').text('RENDERING')
     camera.position.set(10*k,10*ml,100*ly)
@@ -302,7 +302,7 @@ let selectSection = () => {
     removeSection(observableUniverseObjs)
     renderStatus.observableUniverse = false
   })
-  $('.milky-way-btn').click(()=>{
+  $('.milky-way-btn').mousedown(()=>{
     goTo('none')
     camera.position.set(1*k*bn*ml,2*k*bn*ml,2*bn*bn)
     renderMilkyWay()
@@ -316,7 +316,7 @@ let selectSection = () => {
     removeSection(observableUniverseObjs)
     renderStatus.observableUniverse = false
   })
-  $('.local-group-btn').click(()=>{
+  $('.local-group-btn').mousedown(()=>{
     goTo('none')
     camera.position.set(10*k,bn*bn*320)
     renderLocalGroup()
@@ -328,7 +328,7 @@ let selectSection = () => {
     removeSection(observableUniverseObjs)
     renderStatus.observableUniverse = false
   })
-  $('.laniakea-cluster-btn').click(()=>{
+  $('.laniakea-cluster-btn').mousedown(()=>{
     goTo('none')
     camera.position.set(k*bn*ml*150,2*k*bn*ml*50,bn*bn*k*16)
     renderLaniakeaCluster()
@@ -338,7 +338,7 @@ let selectSection = () => {
     removeSection(observableUniverseObjs)
     renderStatus.observableUniverse = false
   })
-  $('.local-super-cluster-btn').click(()=>{
+  $('.local-super-cluster-btn').mousedown(()=>{
     goTo('none')
     camera.position.set(k*bn*ml*150,2*k*bn*bn,bn*bn*k*100)
     renderLocalSuperClusters()
@@ -346,7 +346,7 @@ let selectSection = () => {
     removeSection(observableUniverseObjs)
     renderStatus.observableUniverse = false
   })
-  $('.observable-universe-btn').click(()=>{
+  $('.observable-universe-btn').mousedown(()=>{
     goTo('none')
     camera.position.set(k*bn*ml*k*k,k*bn*ml*k*k,bn*bn*ml)
     renderObservableUniverse()
@@ -377,10 +377,10 @@ let solarSystemInfo = () => {
     let planet = planets[key]
     let div = $(`<div class="info-div"></div>`)
     let img = $(`<img src="${planet.img}">`)
-    let name = $(`<div>${planet.name}</div>`)
-    let diameter = $(`<div>Diameter: ${planet.diameter}</div>`)
-    let dist = $(`<div>Distance from Sun: ${planet.distFromSun}</div>`)
-    let orbPeriod = $(`<div>Orbital Period: ${planet.orbitalPeriod}</div>`)
+    let name = $(`<div class="info-div-header">${planet.name}</div>`)
+    let diameter = $(`<div> Diameter: ${planet.diameter}</div>`)
+    let dist = $(`<div> Km from Sun: ${planet.distFromSun}</div>`)
+    let orbPeriod = $(`<div> Orbital Period: ${planet.orbitalPeriod}</div>`)
     let desc = $(`<p>${planet.desc}</p>`)
     div.append(img)
     div.append(name)
@@ -388,7 +388,7 @@ let solarSystemInfo = () => {
     div.append(dist)
     div.append(orbPeriod)
     div.append(desc)
-    div.on('click', () => {
+    div.on('mousedown', () => {
       goTo(planet.name)
     })
     $('.info').append(div)
@@ -640,11 +640,11 @@ let deadFuncs = () => {
       let infoBtn = `<button class='back-btn'>Back</button>`
       let exploreBtn = `<button class='explore-btn'><a href='/explore.html'>Explore</a></button>`
       $('.footer').append(infoBtn, exploreBtn)
-      $('.back-btn').on('click', () => {
+      $('.back-btn').on('mousedown', () => {
         planet = 'unloaded'
         loadPlanetInfo('back')
       })
-      $('.explore-btn').on('click', () => {
+      $('.explore-btn').on('mousedown', () => {
         // console.log('lets explore')
         // explorePlanet(currPlanet)
       })
@@ -655,7 +655,7 @@ let deadFuncs = () => {
       let infoBtn = `<button class='planet-info'>${planetName}</button>`
       currPlanet = planet
       $('.footer').append(infoBtn)
-      $('.planet-info').on('click', () => {
+      $('.planet-info').on('mousedown', () => {
         loadPlanetInfo(currPlanet)
       })
     }
@@ -670,7 +670,7 @@ let deadFuncs = () => {
       let planetName = planet.name.toUpperCase()
       let infoBtn = $(`<button class='planet-info'>${planetName}</button>`)
       $('.footer').append(infoBtn)
-      $('.planet-info').on('click', () => {
+      $('.planet-info').on('mousedown', () => {
         loadPlanetInfo(currPlanet)
       })
     }
@@ -689,7 +689,7 @@ let deadFuncs = () => {
       let infoBtn = `<button class='back-btn'>Back</button>`
       let exploreBtn = `<button class='explore-btn'><a href='/explore.html'>Skyview</a></button>`
       $('.footer').append(infoBtn, exploreBtn)
-      $('.back-btn').on('click', () => {
+      $('.back-btn').on('mousedown', () => {
         loaded = false
         currPlanet = null
         // $('.planet-info-left').empty()
@@ -725,7 +725,7 @@ let deadFuncs = () => {
         }
       }
     })
-    $('body').on('click', (e) => {
+    $('body').on('mousedown', (e) => {
       let mouse = {}
       mouse.x = ((e.clientX / window.innerWidth) * 2 - 1)
       mouse.y = (-(e.clientY / window.innerHeight) * 2 + 1)
