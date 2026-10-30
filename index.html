@@ -1,51 +1,58 @@
 <html>
-  <head>
-    <link rel="stylesheet" href="css/main.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js" integrity="sha512-jeYvJdyAYkpQCY/omvCYQo89qA5YxDW4JBT7COPsHT2sOAanwxkZRFeP9gc69b5reSDpZIoyCqZQZcWZkbB5Gw==" crossorigin="anonymous"></script>
-    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
-    <!-- <script src="three.js-master/build/three.js"></script> -->
 
-    <title>Solar System</title>
-  </head>
-  <body>
+<head>
+  <link rel="stylesheet" href="css/main.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"
+    integrity="sha512-jeYvJdyAYkpQCY/omvCYQo89qA5YxDW4JBT7COPsHT2sOAanwxkZRFeP9gc69b5reSDpZIoyCqZQZcWZkbB5Gw=="
+    crossorigin="anonymous"></script>
+  <!-- <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.124.0/examples/js/controls/OrbitControls.js"></script>
+  <!-- <script src="three.js-master/build/three.js"></script> -->
 
-    <div class='viewbox'></div>
+  <title>Solar System</title>
+</head>
 
-    <div class="info-center">
-      <!-- Distance Info -->
-      <div class="rendering"></div>
-      <div class="distance-info">
-        <div class="curr-info">
-          <div class='curr-name'></div>
-          <div class='curr-objects'></div>
-          <div class='curr-size'></div>
-        </div>
-        <div class="distance-mesurements">
-          <div class='ly'></div>
-          <div class='km'></div>
-        </div>
+<body>
+
+  <div class='viewbox'></div>
+
+  <div class="info-center">
+    <!-- Distance Info -->
+    <div class="rendering"></div>
+    <div class="distance-info">
+      <div class="curr-info">
+        <div class='curr-name'></div>
+        <div class='curr-objects'></div>
+        <div class='curr-size'></div>
       </div>
-      <!-- Navigating Buttons -->
-      <div class="info-btns">
-        <div class="solar-system-btn info-btn">Solar System</div>
-        <div class="steller-hood-btn info-btn">Steller Neighborhood</div>
-        <div class="milky-way-btn info-btn">Milky Way</div>
-        <div class="local-group-btn info-btn">Local Group</div>
-        <div class="laniakea-cluster-btn info-btn">Laniakea Cluster</div>
-        <div class="local-super-cluster-btn info-btn">Local Super Cluster</div>
-        <div class="observable-universe-btn info-btn">Observable Universe</div>
+      <div class="distance-mesurements">
+        <div class='ly'></div>
+        <div class='km'></div>
       </div>
-      <!-- Main Info Div -->
-      <div class="info"></div>
     </div>
+    <!-- Navigating Buttons -->
+    <div class="info-btns">
+      <div class="solar-system-btn info-btn">Solar System</div>
+      <div class="steller-hood-btn info-btn">Steller Neighborhood</div>
+      <div class="milky-way-btn info-btn">Milky Way</div>
+      <div class="local-group-btn info-btn">Local Group</div>
+      <div class="laniakea-cluster-btn info-btn">Laniakea Cluster</div>
+      <div class="local-super-cluster-btn info-btn">Local Super Cluster</div>
+      <div class="observable-universe-btn info-btn">Observable Universe</div>
+    </div>
+    <!-- Main Info Div -->
+    <div class="info"></div>
+  </div>
 
-    <!-- Scripts -->
-    <script src="js/data/solarSystem.js"></script>
-    <script src="js/data/closeStars.js"></script>
-    <script src="js/data/localGroup.js"></script>
-    <script src="js/data/laniakea.js"></script>
-    <script src="js/solarSystem.js"></script>
+  <!-- Scripts -->
+  <script src="js/data/solarSystem.js"></script>
+  <script src="js/data/closeStars.js"></script>
+  <script src="js/data/localGroup.js"></script>
+  <script src="js/data/laniakea.js"></script>
+  <script src="js/solarSystem.js"></script>
 
-  </body>
+</body>
+
 </html>

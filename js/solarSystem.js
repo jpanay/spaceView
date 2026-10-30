@@ -1,5 +1,11 @@
 // import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 let scene, camera, renderer, light, controls
+
+let ly = 9460730470000
+let k = 1000
+let ml = 1000000
+let bn = 1000000000
+
 let init = () => {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
@@ -26,56 +32,54 @@ let init = () => {
   $('.viewbox').append(renderer.domElement)
   // document.body.appendChild(renderer.domElement);
 }
-let ly = 9460730470000
-let k = 1000
-let ml = 1000000
-let bn = 1000000000
 
 // solarSystem, closeStars, milkyWay, localGroup, laniakeaCluster, localSuperClusters, observableUniverse
 // HELPER FUNCTIONS
 let randomNum = (min, max) => {
   return Math.random() * (max - min) + min;
 }
+
 let currData = []
-let generateSpheres = (objArr,raidus, imgPath, amount, min, max) => {
+
+let generateSpheres = (objArr, raidus, imgPath, amount, min, max) => {
   let randomColor = () => {
-    let starColors = [ 0x91B6FF,0xA6C4FF,0xCEDBFF,0xEFF0FE,0xFDEEE9,0xFFDCBB,0xFFB76A,0xFF8412,0xFF3C00 ]
-    return starColors[Math.floor(randomNum(0,7))]
+    let starColors = [0x91B6FF, 0xA6C4FF, 0xCEDBFF, 0xEFF0FE, 0xFDEEE9, 0xFFDCBB, 0xFFB76A, 0xFF8412, 0xFF3C00]
+    return starColors[Math.floor(randomNum(0, 7))]
   }
   let geometry = new THREE.SphereGeometry(raidus, 80, 80)
   // let texture = new THREE.TextureLoader().load(imgPath)
   let material
   for (let i = 0; i < amount; i++) {
     let color = randomColor()
-    material = new THREE.MeshBasicMaterial( {color: color, transparent: true, opacity: 1, wireframe: false} )
+    material = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 1, wireframe: false })
     let currObj = new THREE.Mesh(geometry, material)
-    let x = randomNum(min,max)
-    let y = randomNum(min,max)
-    let z = randomNum(min,max)
-    currData.push({x: x, y: y, z: z, color: color})
-    currObj.position.set(x,y,z)
+    let x = randomNum(min, max)
+    let y = randomNum(min, max)
+    let z = randomNum(min, max)
+    currData.push({ x: x, y: y, z: z, color: color })
+    currObj.position.set(x, y, z)
     scene.add(currObj)
     objArr.push(currObj)
   }
 }
 
-let generateCluster = (objArr,raidus, imgPath, amount, min, max, maxDist = 10e+1000) => {
+let generateCluster = (objArr, raidus, imgPath, amount, min, max, maxDist = 10e+1000) => {
   let geometry = new THREE.SphereGeometry(raidus, 8, 8)
   let material
   let texture = new THREE.TextureLoader().load('media/cluster.png')
   for (let i = 0; i < amount; i++) {
-    material = new THREE.MeshBasicMaterial( {color: 0xffffff, transparent: true, opacity: 0.7, wireframe: true} )
+    material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7, wireframe: true })
     let currObj = new THREE.Mesh(geometry, material)
-    let x = randomNum(min,max)
-    let y = randomNum(min,max)
-    let z = randomNum(min,max)
-    let randomScale = randomNum(0,5)
-    currObj.scale.set(randomScale,randomScale,randomScale)
-    currObj.scale.set(randomNum(0,5),randomNum(0,5),randomNum(0,5))
-    currObj.rotation.set(randomNum(0,10),randomNum(0,10),randomNum(0,10))
-    currData.push({x: x, y: y, z: z})
-    currObj.position.set(x,y,z)
-    if (calcDist(currObj.position, {x: 0, y: 0, z:0}) < maxDist) {
+    let x = randomNum(min, max)
+    let y = randomNum(min, max)
+    let z = randomNum(min, max)
+    let randomScale = randomNum(0, 5)
+    currObj.scale.set(randomScale, randomScale, randomScale)
+    currObj.scale.set(randomNum(0, 5), randomNum(0, 5), randomNum(0, 5))
+    currObj.rotation.set(randomNum(0, 10), randomNum(0, 10), randomNum(0, 10))
+    currData.push({ x: x, y: y, z: z })
+    currObj.position.set(x, y, z)
+    if (calcDist(currObj.position, { x: 0, y: 0, z: 0 }) < maxDist) {
       scene.add(currObj)
       objArr.push(currObj)
     }
@@ -83,33 +87,33 @@ let generateCluster = (objArr,raidus, imgPath, amount, min, max, maxDist = 10e+1
 }
 
 let calcDist = (pos1, pos2) => {
-  return Math.floor(Math.sqrt(((pos2.x - pos1.x) ** 2)+((pos2.y - pos1.y) ** 2)+((pos2.z - pos1.z) ** 2)))
+  return Math.floor(Math.sqrt(((pos2.x - pos1.x) ** 2) + ((pos2.y - pos1.y) ** 2) + ((pos2.z - pos1.z) ** 2)))
 }
 
 // RENDERING FUNCTIONS
 let perspective = []
 let renderStructures = () => {
-  let sun = {name: 'sun', w: 1400000, h: 1400000, color: 0xffd94f}
-  let solarSystem = {name: 'solarSystem', w: 287000000000, h: 50000000000, color: 0xf58742}
-  let closeStars = {name: 'closeStars', w: 30*ly, h: 30*ly, color: 0xffe680}
-  let milkyWay = {name: 'milkyWay', w: 105000*ly, h: 105000*ly / 8, color: 0xd4feff}
-  let localGroup = {name: 'localGroup', w: 10000000*ly, h: 10000000*ly, color: 0xffd4de}
-  let laniakeaCluster = {name: 'laniakeaCluster', w: 500000000*ly, h: 500000000*ly, color: 0x8053fc}
-  let localSuperClusters = {name: 'localSuperClusters', w: 3000000000*ly, h: 3000000000*ly, color: 0x53fcda}
-  let observableUniverse = {name: 'observableUniverse', w: 93000000000*ly, h: 93000000000*ly, color: 0x9a59cf}
+  let sun = { name: 'sun', w: 1400000, h: 1400000, color: 0xffd94f }
+  let solarSystem = { name: 'solarSystem', w: 287000000000, h: 50000000000, color: 0xf58742 }
+  let closeStars = { name: 'closeStars', w: 30 * ly, h: 30 * ly, color: 0xffe680 }
+  let milkyWay = { name: 'milkyWay', w: 105000 * ly, h: 105000 * ly / 8, color: 0xd4feff }
+  let localGroup = { name: 'localGroup', w: 10000000 * ly, h: 10000000 * ly, color: 0xffd4de }
+  let laniakeaCluster = { name: 'laniakeaCluster', w: 500000000 * ly, h: 500000000 * ly, color: 0x8053fc }
+  let localSuperClusters = { name: 'localSuperClusters', w: 3000000000 * ly, h: 3000000000 * ly, color: 0x53fcda }
+  let observableUniverse = { name: 'observableUniverse', w: 93000000000 * ly, h: 93000000000 * ly, color: 0x9a59cf }
   let objects = [sun, solarSystem, closeStars, milkyWay, localGroup, laniakeaCluster, localSuperClusters, observableUniverse]
 
   for (let object of objects) {
-    let geometry = new THREE.BoxGeometry(object.w, object.h, object.w, 3,3,3);
-    let material = new THREE.MeshBasicMaterial( {color: object.color, wireframe: true, opacity: 0.2, transparent: true} );
+    let geometry = new THREE.BoxGeometry(object.w, object.h, object.w, 3, 3, 3);
+    let material = new THREE.MeshBasicMaterial({ color: object.color, wireframe: true, opacity: 0.2, transparent: true });
     if (object === observableUniverse) {
       let uniTexture = new THREE.TextureLoader().load('media/cosmic.png')
-      geometry = new THREE.SphereGeometry(object.w/2, 36, 36);
+      geometry = new THREE.SphereGeometry(object.w / 2, 36, 36);
     }
     // , side: THREE.DoubleSide
-    let generate = new THREE.Mesh( geometry, material );
-    if(object === milkyWay) {
-      generate.position.set(-ly*15*k,0,ly*15*k)
+    let generate = new THREE.Mesh(geometry, material);
+    if (object === milkyWay) {
+      generate.position.set(-ly * 15 * k, 0, ly * 15 * k)
     }
     generate.name = object.name
     perspective[generate.name] = generate
@@ -121,31 +125,31 @@ let orbArr = []
 let planetArr = []
 let renderSolarSystem = () => {
   let makePlanet = (planet) => {
-    planet.radius = planet.diameter/2
+    planet.radius = planet.diameter / 2
 
     let geometry = new THREE.SphereGeometry(planet.radius, 80, 80)
     let texture = new THREE.TextureLoader().load(`media/2k_${planet.name}.jpg`)
-    let material = new THREE.MeshBasicMaterial( {map: texture, color: 0xffffff, transparent: true, opacity: 1, wireframe: false} )
+    let material = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff, transparent: true, opacity: 1, wireframe: false })
     if (planet.name === 'sun') {
-      material = new THREE.MeshBasicMaterial( {map: texture, color: 0xffffff, transparent: true, opacity: 1, wireframe: false} )
+      material = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff, transparent: true, opacity: 1, wireframe: false })
     }
     let currPlanet = new THREE.Mesh(geometry, material)
     currPlanet.name = planet.name
     currPlanet.position.x = planet.distFromSun
     currPlanet.theta = 0
-    currPlanet.radius = planet.diameter/2
+    currPlanet.radius = planet.diameter / 2
     currPlanet.distFromSun = planet.distFromSun
     currPlanet.orbitalPeriod = planet.orbitalPeriod
     scene.add(currPlanet)
     planetArr.push(currPlanet)
 
     let orbGeometry = new THREE.SphereGeometry(20000000, 12, 12)
-    let orbMaterial = new THREE.MeshBasicMaterial( {map: texture, color: 0xffffff, transparent: true, opacity: 0.05, wireframe: true} )
+    let orbMaterial = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff, transparent: true, opacity: 0.05, wireframe: true })
     let currOrb = new THREE.Mesh(orbGeometry, orbMaterial)
     currOrb.name = planet.name
     currOrb.position.x = planet.distFromSun
     currOrb.theta = 0
-    currOrb.radius = planet.diameter/2
+    currOrb.radius = planet.diameter / 2
     currOrb.distFromSun = planet.distFromSun
     currOrb.orbitalPeriod = planet.orbitalPeriod
     scene.add(currOrb)
@@ -159,29 +163,30 @@ let renderSolarSystem = () => {
     let msDay = 24 * 60 * 60000
     let msYear = 365 * msDay
     setInterval(() => {
-    for (let i = 0; i < planetArr.length; i++) {
-      let p = planetArr[i]
-      let orb = orbArr[i]
-      if(p.name === 'sun') { continue }
-      let dTheta = 2 * Math.PI / p.orbitalPeriod / 1000
-      p.theta = p.theta + dTheta
-      p.position.x = (p.distFromSun) * Math.cos(p.theta);
-      p.position.z = (p.distFromSun) * Math.sin(p.theta);
-      orb.position.x = (p.distFromSun) * Math.cos(p.theta);
-      orb.position.z = (p.distFromSun) * Math.sin(p.theta);
-      p.rotation.y += 0.003
-    }
+      for (let i = 0; i < planetArr.length; i++) {
+        let p = planetArr[i]
+        let orb = orbArr[i]
+        if (p.name === 'sun') { continue }
+        let dTheta = 2 * Math.PI / p.orbitalPeriod / 1000
+        p.theta = p.theta + dTheta
+        p.position.x = (p.distFromSun) * Math.cos(p.theta);
+        p.position.z = (p.distFromSun) * Math.sin(p.theta);
+        orb.position.x = (p.distFromSun) * Math.cos(p.theta);
+        orb.position.z = (p.distFromSun) * Math.sin(p.theta);
+        p.rotation.y += 0.003
+      }
 
     }, 10)
   }
   // setOrbit()
 }
+
 let stellerObjs = []
 let renderStellarNeightborhood = () => {
   // 71 stars +  + several planetary systems
   for (let star of closeStars) {
-    let geometry = new THREE.SphereGeometry(ly/10, 80, 80)
-    let material = new THREE.MeshBasicMaterial( {color: star.color} )
+    let geometry = new THREE.SphereGeometry(ly / 10, 80, 80)
+    let material = new THREE.MeshBasicMaterial({ color: star.color })
     let currStar = new THREE.Mesh(geometry, material)
     currStar.position.set(star.x, star.y, star.z)
     scene.add(currStar)
@@ -189,22 +194,24 @@ let renderStellarNeightborhood = () => {
   }
   // generateSpheres(stellerObjs, ly/10, 'media/2k_sun.jpg', 71, -ly*20, ly*20)
 }
+
 let milkywayObjs = []
 let renderMilkyWay = () => {
   // 100b stars + gasses and other stuff
   let texture = new THREE.TextureLoader().load('media/milky.jpg')
-  let geometry = new THREE.CylinderGeometry(50*k*ly, 50*k*ly, 5*k*ly, 24, 30);
-  let material = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.1, map: texture, side: THREE.DoubleSide});
-  let material2 = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.5, map: texture});
+  let geometry = new THREE.CylinderGeometry(50 * k * ly, 50 * k * ly, 5 * k * ly, 24, 30);
+  let material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.1, map: texture, side: THREE.DoubleSide });
+  let material2 = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5, map: texture });
   let cylinder1 = new THREE.Mesh(geometry, material);
   let cylinder2 = new THREE.Mesh(geometry, material2);
-  cylinder1.position.set(-ly*15*k,0,ly*15*k)
-  cylinder2.position.set(-ly*15*k,0,ly*15*k)
+  cylinder1.position.set(-ly * 15 * k, 0, ly * 15 * k)
+  cylinder2.position.set(-ly * 15 * k, 0, ly * 15 * k)
   milkywayObjs.push(cylinder1)
   milkywayObjs.push(cylinder2)
   scene.add(cylinder1);
   scene.add(cylinder2);
 }
+
 let localGroupObjs = []
 let renderLocalGroup = () => {
   // 30 galaxies
@@ -215,20 +222,20 @@ let renderLocalGroup = () => {
   let texture5 = new THREE.TextureLoader().load('media/galaxy5.png')
   for (let galaxy of localGroupData) {
     // let geometry = new THREE.SphereGeometry(ly*k*80, 80, 80)
-    let textures = [texture1,texture2,texture3,texture4,texture5]
-    let width = randomNum(ly*k*30, ly*k*200)
-    let height = randomNum(ly*k*3, ly*k*30)
+    let textures = [texture1, texture2, texture3, texture4, texture5]
+    let width = randomNum(ly * k * 30, ly * k * 200)
+    let height = randomNum(ly * k * 3, ly * k * 30)
     let rotation = randomNum(-30, 30)
     let currTexture = textures[Math.floor(randomNum(0, 4))]
     let geometry = new THREE.CylinderGeometry(width, width, height, 10, 1)
-    let material = new THREE.MeshBasicMaterial( {map: currTexture, transparent: true, opacity: 0.9, color: 0xffffff} )
-    let wrapperMaterial = new THREE.MeshBasicMaterial( {transparent: true, opacity: 0.2, color: 0xffffff, wireframe: true} )
+    let material = new THREE.MeshBasicMaterial({ map: currTexture, transparent: true, opacity: 0.9, color: 0xffffff })
+    let wrapperMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.2, color: 0xffffff, wireframe: true })
     let currGalaxy = new THREE.Mesh(geometry, material)
     let currGalaxyWrapper = new THREE.Mesh(geometry, wrapperMaterial)
     currGalaxy.position.set(galaxy.x, galaxy.y, galaxy.z)
-    currGalaxy.rotation.set(rotation,-rotation,rotation)
+    currGalaxy.rotation.set(rotation, -rotation, rotation)
     currGalaxyWrapper.position.set(galaxy.x, galaxy.y, galaxy.z)
-    currGalaxyWrapper.rotation.set(rotation,-rotation,rotation)
+    currGalaxyWrapper.rotation.set(rotation, -rotation, rotation)
     scene.add(currGalaxy)
     scene.add(currGalaxyWrapper)
     localGroupObjs.push(currGalaxy)
@@ -236,18 +243,21 @@ let renderLocalGroup = () => {
   }
   // generateSpheres(localGroupObjs, ly*k*80, 'media/white.png', 30, -ly*ml*5, ly*ml*5)
 }
+
 let laniakeaObjs = []
 let renderLaniakeaCluster = () => {
   // 300-500 galaxy clusters
-  generateCluster(laniakeaObjs, ly*ml, 'media/2k_sun.jpg', 200, -ly*ml*260, ly*ml*260)
+  generateCluster(laniakeaObjs, ly * ml, 'media/2k_sun.jpg', 200, -ly * ml * 260, ly * ml * 260)
 }
+
 let localSuperClusterObjs = []
 let renderLocalSuperClusters = () => {
-  generateCluster(localSuperClusterObjs, ly*ml*10, 'media/2k_sun.jpg', 200, -ly*ml*1200, ly*ml*1200)
+  generateCluster(localSuperClusterObjs, ly * ml * 10, 'media/2k_sun.jpg', 200, -ly * ml * 1200, ly * ml * 1200)
 }
+
 let observableUniverseObjs = []
 let renderObservableUniverse = () => {
-  generateCluster(observableUniverseObjs, ly*ml*100, 'media/2k_sun.jpg', 5000, -ly*bn*45, ly*bn*45, ly*bn*45)
+  generateCluster(observableUniverseObjs, ly * ml * 100, 'media/2k_sun.jpg', 5000, -ly * bn * 45, ly * bn * 45, ly * bn * 45)
 }
 
 // HANDLING OBJECTS
@@ -256,6 +266,7 @@ let removeSection = (sectionObjects) => {
     scene.remove(object)
   }
 }
+
 let resetOpacity = () => {
   perspective.sun.material.opacity = 0
   perspective.solarSystem.material.opacity = 0
@@ -266,10 +277,11 @@ let resetOpacity = () => {
   perspective.localSuperClusters.material.opacity = 0
   perspective.observableUniverse.material.opacity = 0
 }
+
 let selectSection = () => {
-  $('.solar-system-btn').mousedown(()=>{
+  $('.solar-system-btn').click(() => {
     solarSystemInfo()
-    camera.position.set(100*k,200*ml, bn)
+    camera.position.set(100 * k, 200 * ml, bn)
     renderSolarSystem()
     removeSection(stellerObjs)
     renderStatus.closeStars = false
@@ -284,10 +296,10 @@ let selectSection = () => {
     removeSection(observableUniverseObjs)
     renderStatus.observableUniverse = false
   })
-  $('.steller-hood-btn').mousedown(()=>{
+  $('.steller-hood-btn').click(() => {
     goTo('none')
     $('.rendering').text('RENDERING')
-    camera.position.set(10*k,10*ml,100*ly)
+    camera.position.set(10 * k, 10 * ml, 100 * ly)
     renderStellarNeightborhood()
     $('.rendering').text('')
     renderStatus.closeStars = true
@@ -302,9 +314,9 @@ let selectSection = () => {
     removeSection(observableUniverseObjs)
     renderStatus.observableUniverse = false
   })
-  $('.milky-way-btn').mousedown(()=>{
+  $('.milky-way-btn').click(() => {
     goTo('none')
-    camera.position.set(1*k*bn*ml,2*k*bn*ml,2*bn*bn)
+    camera.position.set(1 * k * bn * ml, 2 * k * bn * ml, 2 * bn * bn)
     renderMilkyWay()
     renderStatus.milkyWay = true
     removeSection(localGroupObjs)
@@ -316,9 +328,9 @@ let selectSection = () => {
     removeSection(observableUniverseObjs)
     renderStatus.observableUniverse = false
   })
-  $('.local-group-btn').mousedown(()=>{
+  $('.local-group-btn').click(() => {
     goTo('none')
-    camera.position.set(10*k,bn*bn*320)
+    camera.position.set(10 * k, bn * bn * 320)
     renderLocalGroup()
     renderStatus.localGroup = true
     removeSection(laniakeaObjs)
@@ -328,9 +340,9 @@ let selectSection = () => {
     removeSection(observableUniverseObjs)
     renderStatus.observableUniverse = false
   })
-  $('.laniakea-cluster-btn').mousedown(()=>{
+  $('.laniakea-cluster-btn').click(() => {
     goTo('none')
-    camera.position.set(k*bn*ml*150,2*k*bn*ml*50,bn*bn*k*16)
+    camera.position.set(k * bn * ml * 150, 2 * k * bn * ml * 50, bn * bn * k * 16)
     renderLaniakeaCluster()
     renderStatus.laniakeaCluster = true
     removeSection(localSuperClusterObjs)
@@ -338,17 +350,17 @@ let selectSection = () => {
     removeSection(observableUniverseObjs)
     renderStatus.observableUniverse = false
   })
-  $('.local-super-cluster-btn').mousedown(()=>{
+  $('.local-super-cluster-btn').click(() => {
     goTo('none')
-    camera.position.set(k*bn*ml*150,2*k*bn*bn,bn*bn*k*100)
+    camera.position.set(k * bn * ml * 150, 2 * k * bn * bn, bn * bn * k * 100)
     renderLocalSuperClusters()
     renderStatus.localSuperClusters = true
     removeSection(observableUniverseObjs)
     renderStatus.observableUniverse = false
   })
-  $('.observable-universe-btn').mousedown(()=>{
+  $('.observable-universe-btn').click(() => {
     goTo('none')
-    camera.position.set(k*bn*ml*k*k,k*bn*ml*k*k,bn*bn*ml)
+    camera.position.set(k * bn * ml * k * k, k * bn * ml * k * k, bn * bn * ml)
     renderObservableUniverse()
     renderStatus.observableUniverse = true
   })
@@ -408,19 +420,19 @@ let renderStatus = {
 }
 
 let distInterval = setInterval(() => {
-  let currDistKm = calcDist(camera.position, {x: 0, y: 0, z: 0})
+  let currDistKm = calcDist(camera.position, { x: 0, y: 0, z: 0 })
   let currDistLy = Math.floor(currDistKm / ly)
 
-  let sun = {w: 1400000, color: '#ff8940'}
-  let solarSystem = {w: 287000000000, color: '#ff8940'}
-  let closeStars = {w: 30*ly, color: '#ffe680'}
-  let milkyWay = {w: 105000*ly, color: '#d4feff'}
-  let localGroup = {w: 10000000*ly, color: '#ffd4de'}
-  let laniakeaCluster = {w: 500000000*ly, color: '#8053fc'}
-  let localSuperClusters = {w: 3000000000*ly, color: '#53fcda'}
-  let observableUniverse = {w: 93000000000*ly, color: '#9a59cf'}
+  let sun = { w: 1400000, color: '#ff8940' }
+  let solarSystem = { w: 287000000000, color: '#ff8940' }
+  let closeStars = { w: 30 * ly, color: '#ffe680' }
+  let milkyWay = { w: 105000 * ly, color: '#d4feff' }
+  let localGroup = { w: 10000000 * ly, color: '#ffd4de' }
+  let laniakeaCluster = { w: 500000000 * ly, color: '#8053fc' }
+  let localSuperClusters = { w: 3000000000 * ly, color: '#53fcda' }
+  let observableUniverse = { w: 93000000000 * ly, color: '#9a59cf' }
   // 0 to Edge of solar system
-  if (currDistKm > 0 && currDistKm < solarSystem.w ){
+  if (currDistKm > 0 && currDistKm < solarSystem.w) {
     if (!renderStatus.solarSystem) {
       renderStatus.solarSystem = true
       renderSolarSystem()
@@ -432,8 +444,8 @@ let distInterval = setInterval(() => {
     $('.curr-name').text(`Solar System`)
     $('.curr-name').css('color', sun.color)
     $('.curr-objects').text(`Objects: 1 star, 8 planets, 32 satelites`)
-    $('.curr-size').text(`Width: ${solarSystem.w/1000000000} Billion KM`)
-    $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000)} Million`)
+    $('.curr-size').text(`Width: ${solarSystem.w / 1000000000} Billion KM`)
+    $('.km').text(`Kilometers: ${Math.floor(currDistKm / 1000000)} Million`)
     $('.ly').text(`Light Years: ${currDistLy}`)
     perspective.sun.material.opacity = 0
     perspective.solarSystem.material.opacity = 0.05
@@ -446,7 +458,7 @@ let distInterval = setInterval(() => {
 
   }
   // Solar System
-  if (currDistKm > solarSystem.w && currDistKm < closeStars.w ){
+  if (currDistKm > solarSystem.w && currDistKm < closeStars.w) {
     if (!renderStatus.closeStars) {
       renderStatus.closeStars = true
       renderStellarNeightborhood()
@@ -455,15 +467,15 @@ let distInterval = setInterval(() => {
     $('.curr-name').css('color', solarSystem.color)
     $('.curr-name').text(`Solar System`)
     $('.curr-objects').text(`Objects: 1 star, 8 planets, 32 satelites`)
-    $('.curr-size').text(`Width: ${solarSystem.w/1000000000} Billion KM`)
-    $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000000)} Billion`)
+    $('.curr-size').text(`Width: ${solarSystem.w / 1000000000} Billion KM`)
+    $('.km').text(`Kilometers: ${Math.floor(currDistKm / 1000000000)} Billion`)
     $('.ly').text(`Light Years: ${currDistLy}`)
     perspective.solarSystem.material.opacity = 0.2
     perspective.closeStars.material.opacity = 0.05
     perspective.milkyWay.material.opacity = 0
   }
   // Close Stars
-  if (currDistKm > closeStars.w && currDistKm < milkyWay.w ){
+  if (currDistKm > closeStars.w && currDistKm < milkyWay.w) {
     if (!renderStatus.milkyWay) {
       renderStatus.milkyWay = true
       renderMilkyWay()
@@ -476,15 +488,15 @@ let distInterval = setInterval(() => {
     $('.curr-name').css('color', closeStars.color)
     $('.curr-name').text(`Stellar Neighborhood`)
     $('.curr-objects').text(`Objects: 71 Stars`)
-    $('.curr-size').text(`Width: ${closeStars.w/ly} Light Years`)
-    $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000000000000)} Quintillion`)
+    $('.curr-size').text(`Width: ${closeStars.w / ly} Light Years`)
+    $('.km').text(`Kilometers: ${Math.floor(currDistKm / 1000000000000000)} Quintillion`)
     $('.ly').text(`Light Years: ${currDistLy}`)
     perspective.closeStars.material.opacity = 0.2
     perspective.milkyWay.material.opacity = 0.05
     perspective.localGroup.material.opacity = 0
   }
   // Milky Way
-  if (currDistKm > milkyWay.w && currDistKm < localGroup.w ){
+  if (currDistKm > milkyWay.w && currDistKm < localGroup.w) {
     if (!renderStatus.localGroup) {
       renderStatus.localGroup = true
       renderLocalGroup()
@@ -497,14 +509,14 @@ let distInterval = setInterval(() => {
     $('.curr-name').css('color', milkyWay.color)
     $('.curr-name').text(`Milky Way`)
     $('.curr-objects').text(`Objects: 100 Billion Stars*, Gases`)
-    $('.curr-size').text(`Width: ${milkyWay.w/ly/1000} Thousand Light Years`)
-    $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000000000000000)} Sextillion`)
-    $('.ly').text(`Light Years: ${Math.floor(currDistLy/1000)} Thousand Light Years`)
+    $('.curr-size').text(`Width: ${milkyWay.w / ly / 1000} Thousand Light Years`)
+    $('.km').text(`Kilometers: ${Math.floor(currDistKm / 1000000000000000000)} Sextillion`)
+    $('.ly').text(`Light Years: ${Math.floor(currDistLy / 1000)} Thousand Light Years`)
     perspective.milkyWay.material.opacity = 0.2
     perspective.localGroup.material.opacity = 0.05
     perspective.laniakeaCluster.material.opacity = 0
   }
-  if (currDistKm > localGroup.w && currDistKm < laniakeaCluster.w ){
+  if (currDistKm > localGroup.w && currDistKm < laniakeaCluster.w) {
     if (!renderStatus.laniakeaCluster) {
       renderStatus.laniakeaCluster = true
       renderLaniakeaCluster()
@@ -517,15 +529,15 @@ let distInterval = setInterval(() => {
     $('.curr-name').css('color', localGroup.color)
     $('.curr-name').text(`Local Group`)
     $('.curr-objects').text(`Objects: 30 Galaxies`)
-    $('.curr-size').text(`Width:  ${localGroup.w/ly/1000000} Million Light Years`)
-    $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000000000000000)} Sextillion`)
-    $('.ly').text(`Light Years: ${Math.floor(currDistLy/1000000)} Million`)
+    $('.curr-size').text(`Width:  ${localGroup.w / ly / 1000000} Million Light Years`)
+    $('.km').text(`Kilometers: ${Math.floor(currDistKm / 1000000000000000000)} Sextillion`)
+    $('.ly').text(`Light Years: ${Math.floor(currDistLy / 1000000)} Million`)
     perspective.localGroup.material.opacity = 0.2
     perspective.laniakeaCluster.material.opacity = 0.08
     perspective.localSuperClusters.material.opacity = 0
   }
   // Laniakea Cluster
-  if (currDistKm > laniakeaCluster.w && currDistKm < localSuperClusters.w ){
+  if (currDistKm > laniakeaCluster.w && currDistKm < localSuperClusters.w) {
     if (!renderStatus.localSuperClusters) {
       renderStatus.localSuperClusters = true
       renderLocalSuperClusters()
@@ -538,15 +550,15 @@ let distInterval = setInterval(() => {
     $('.curr-name').css('color', laniakeaCluster.color)
     $('.curr-name').text(`Laniakea Super Cluster`)
     $('.curr-objects').text(`Objects 300-500 Galaxy Clusters (100k Galaxies)`)
-    $('.curr-size').text(`Width: ${laniakeaCluster.w/ly/1000000} Million Light Years`)
-    $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000000000000000000)} Septillion`)
-    $('.ly').text(`Light Years: ${Math.floor(currDistLy/1000000)} Million`)
+    $('.curr-size').text(`Width: ${laniakeaCluster.w / ly / 1000000} Million Light Years`)
+    $('.km').text(`Kilometers: ${Math.floor(currDistKm / 1000000000000000000000)} Septillion`)
+    $('.ly').text(`Light Years: ${Math.floor(currDistLy / 1000000)} Million`)
     perspective.laniakeaCluster.material.opacity = 0.2
     perspective.localSuperClusters.material.opacity = 0.08
     perspective.observableUniverse.material.opacity = 0
   }
   // Local Super Clusters
-  if (currDistKm > localSuperClusters.w && currDistKm < observableUniverse.w ){
+  if (currDistKm > localSuperClusters.w && currDistKm < observableUniverse.w) {
     console.log(renderStatus.observableUniverse)
     if (!renderStatus.observableUniverse) {
       renderStatus.observableUniverse = true
@@ -556,17 +568,17 @@ let distInterval = setInterval(() => {
     $('.curr-name').css('color', localSuperClusters.color)
     $('.curr-name').text(`Local Super Clusters`)
     $('.curr-objects').text(`Objects: 8 Super Clusters (Aprox. 1.2m Galaxies)`)
-    $('.curr-size').text(`Width: ${localSuperClusters.w/ly/1000000000} Billion Light Years`)
-    $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000000000000000000)} Septillion`)
-    $('.ly').text(`Light Years: ${Math.floor(currDistLy/1000000000)} Billion`)
+    $('.curr-size').text(`Width: ${localSuperClusters.w / ly / 1000000000} Billion Light Years`)
+    $('.km').text(`Kilometers: ${Math.floor(currDistKm / 1000000000000000000000)} Septillion`)
+    $('.ly').text(`Light Years: ${Math.floor(currDistLy / 1000000000)} Billion`)
     perspective.localSuperClusters.material.opacity = 0.2
     perspective.observableUniverse.material.opacity = 0.1
   }
-  if (currDistKm > observableUniverse.w){
-    $('.curr-name').text(`Observable Universe (${observableUniverse.w/ly/1000000000} Million Light Years)`)
+  if (currDistKm > observableUniverse.w) {
+    $('.curr-name').text(`Observable Universe (${observableUniverse.w / ly / 1000000000} Million Light Years)`)
     $('.curr-name').css('color', observableUniverse.color)
-    $('.km').text(`Kilometers: ${Math.floor(currDistKm/1000000000000000000000000)} Octillion`)
-    $('.ly').text(`Light Years: ${Math.floor(currDistLy/1000000000)} Billion`)
+    $('.km').text(`Kilometers: ${Math.floor(currDistKm / 1000000000000000000000000)} Octillion`)
+    $('.ly').text(`Light Years: ${Math.floor(currDistLy / 1000000000)} Billion`)
     perspective.observableUniverse.material.opacity = 0.2
   }
 }, 100)
@@ -609,12 +621,12 @@ let deadFuncs = () => {
     $('body').on('keypress', (e) => {
       let key = e.key
       console.log(e.key)
-      if(key === 'Enter') {
+      if (key === 'Enter') {
         camera.position.x = 0;
         camera.position.z = 300;
         camera.position.y = 0;
         camera.rotation.y = 0
-        camera.lookAt(new THREE.Vector3(0,0,0))
+        camera.lookAt(new THREE.Vector3(0, 0, 0))
       }
     })
   }
@@ -626,7 +638,7 @@ let deadFuncs = () => {
     skyBoxTexture.wrapT = THREE.RepeatWrapping;
     skyBoxTexture.wrapS = THREE.RepeatWrapping;
     skyBoxTexture.repeat.set(2, 2);
-    let skyBoxMaterial = new THREE.MeshBasicMaterial({map: skyBoxTexture, side: THREE.DoubleSide, transparent: true, opacity: 0.2})
+    let skyBoxMaterial = new THREE.MeshBasicMaterial({ map: skyBoxTexture, side: THREE.DoubleSide, transparent: true, opacity: 0.2 })
     let skyboxGeo = new THREE.SphereGeometry(universeWidth, 80, 80)
     let skybox = new THREE.Mesh(skyboxGeo, skyBoxMaterial)
     scene.add(skybox)
@@ -682,9 +694,9 @@ let deadFuncs = () => {
       $('.footer').empty()
       loaded = true
       controls.target = planet.position
-      camera.position.x = planet.position.x+(100000000);
+      camera.position.x = planet.position.x + (100000000);
       camera.position.z = planet.position.z;
-      camera.position.y = planet.position.y+(100000000);
+      camera.position.y = planet.position.y + (100000000);
 
       let infoBtn = `<button class='back-btn'>Back</button>`
       let exploreBtn = `<button class='explore-btn'><a href='/explore.html'>Skyview</a></button>`
@@ -695,7 +707,7 @@ let deadFuncs = () => {
         // $('.planet-info-left').empty()
         // $('.planet-info-right').empty()
         $('.footer').empty()
-        controls.target = new THREE.Vector3(0,0,0)
+        controls.target = new THREE.Vector3(0, 0, 0)
         camera.position.set(0, 100000000, 300000000)
       })
 
@@ -716,10 +728,10 @@ let deadFuncs = () => {
         console.log(intersects)
         let name = intersects[0].object.name;
         for (let i = 0; i < planetArr.length; i++) {
-          if(planetArr[i].name === name) {
+          if (planetArr[i].name === name) {
             loadPlanetOptions(planetArr[i])
           }
-          if(orbArr[i].name === name) {
+          if (orbArr[i].name === name) {
             loadPlanetOptions(planetArr[i])
           }
         }
@@ -738,7 +750,7 @@ let deadFuncs = () => {
         for (let intersect of intersects) {
           let name = intersect.object.name;
           for (let planet of planetArr) {
-            if(planet.name === name) {
+            if (planet.name === name) {
               loadPlanetInfo(planet)
             }
           }
